@@ -1,0 +1,20 @@
+# Models package
+from app.models.schemas import (
+    RelationshipMetadata,
+    SourceField,
+    DestinationField,
+    SchemaMetadata,
+    MigrationRequest,
+    FieldProfile,
+    SchemaProfile,
+    MappingCandidate,
+    TransformationAction,
+    ValidationItem,
+    ValidationResult,
+    FieldRecommendation,
+    MigrationRecommendation,
+    Explanation,
+    AgentExecutionOutput,
+    AuditRecord,
+    WorkflowContext,
+)

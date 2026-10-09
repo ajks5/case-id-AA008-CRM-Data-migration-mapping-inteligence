@@ -1,0 +1,212 @@
+[
+  {
+    "case_id": "AA001",
+    "case_study_name": "Appointment Operations Intelligence",
+    "domain": "Healthcare Operations",
+    "complexity": "Medium",
+    "product_bible": "AA001_Appointment_Operations_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA002",
+    "case_study_name": "Bed & Discharge Coordination Intelligence",
+    "domain": "Healthcare Operations",
+    "complexity": "Medium",
+    "product_bible": "AA002_Bed_Discharge_Coordination_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA003",
+    "case_study_name": "Claims Documentation Triage Intelligence",
+    "domain": "Healthcare Administration",
+    "complexity": "Medium",
+    "product_bible": "AA003_Claims_Documentation_Triage_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA004",
+    "case_study_name": "Student Support Case Prioritization",
+    "domain": "Education Operations",
+    "complexity": "Easy",
+    "product_bible": "AA004_Student_Support_Case_Prioritization_Product_Bible.md"
+  },
+  {
+    "case_id": "AA005",
+    "case_study_name": "Course Session Scheduling Intelligence",
+    "domain": "Education Operations",
+    "complexity": "Medium",
+    "product_bible": "AA005_Course_Session_Scheduling_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA006",
+    "case_study_name": "LMS Sync Exception Resolution Intelligence",
+    "domain": "Education Technology",
+    "complexity": "Medium",
+    "product_bible": "AA006_LMS_Sync_Exception_Resolution_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA007",
+    "case_study_name": "Lead Follow-up Prioritization Intelligence",
+    "domain": "Sales Operations",
+    "complexity": "Easy",
+    "product_bible": "AA007_Lead_Follow_up_Prioritization_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA008",
+    "case_study_name": "CRM Data Migration Mapping Intelligence",
+    "domain": "Data & Integration",
+    "complexity": "Advanced",
+    "product_bible": "AA008_CRM_Data_Migration_Mapping_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA009",
+    "case_study_name": "Customer Renewal Action Intelligence",
+    "domain": "Customer Success",
+    "complexity": "Medium",
+    "product_bible": "AA009_Customer_Renewal_Action_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA010",
+    "case_study_name": "Service Ticket Resolution Prioritization",
+    "domain": "IT Service Management",
+    "complexity": "Medium",
+    "product_bible": "AA010_Service_Ticket_Resolution_Prioritization_Product_Bible.md"
+  },
+  {
+    "case_id": "AA011",
+    "case_study_name": "Major Incident Triage & Escalation Intelligence",
+    "domain": "IT Operations",
+    "complexity": "Advanced",
+    "product_bible": "AA011_Major_Incident_Triage_Escalation_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA012",
+    "case_study_name": "Change Request Risk Routing Intelligence",
+    "domain": "IT Change Management",
+    "complexity": "Medium",
+    "product_bible": "AA012_Change_Request_Risk_Routing_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA013",
+    "case_study_name": "Patch Compliance Remediation Prioritization",
+    "domain": "Cloud Operations",
+    "complexity": "Medium",
+    "product_bible": "AA013_Patch_Compliance_Remediation_Prioritization_Product_Bible.md"
+  },
+  {
+    "case_id": "AA014",
+    "case_study_name": "Cloud Cost Anomaly Review Intelligence",
+    "domain": "Cloud FinOps",
+    "complexity": "Medium",
+    "product_bible": "AA014_Cloud_Cost_Anomaly_Review_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA015",
+    "case_study_name": "Security Alert Triage Intelligence",
+    "domain": "Cybersecurity Operations",
+    "complexity": "Advanced",
+    "product_bible": "AA015_Security_Alert_Triage_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA016",
+    "case_study_name": "Access Request Policy Review Intelligence",
+    "domain": "Identity & Access Operations",
+    "complexity": "Medium",
+    "product_bible": "AA016_Access_Request_Policy_Review_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA017",
+    "case_study_name": "Vendor Evaluation Intelligence",
+    "domain": "Procurement",
+    "complexity": "Medium",
+    "product_bible": "AA017_Vendor_Evaluation_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA018",
+    "case_study_name": "Purchase Request Routing Intelligence",
+    "domain": "Procurement Operations",
+    "complexity": "Easy",
+    "product_bible": "AA018_Purchase_Request_Routing_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA019",
+    "case_study_name": "Inventory Replenishment Intelligence",
+    "domain": "Supply Chain",
+    "complexity": "Medium",
+    "product_bible": "AA019_Inventory_Replenishment_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA020",
+    "case_study_name": "Warehouse Dispatch Prioritization Intelligence",
+    "domain": "Warehouse Operations",
+    "complexity": "Medium",
+    "product_bible": "AA020_Warehouse_Dispatch_Prioritization_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA021",
+    "case_study_name": "Fleet Maintenance Prioritization Intelligence",
+    "domain": "Logistics Operations",
+    "complexity": "Medium",
+    "product_bible": "AA021_Fleet_Maintenance_Prioritization_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA022",
+    "case_study_name": "FMCG Sales Route Order Consolidation Intelligence",
+    "domain": "FMCG Operations",
+    "complexity": "Medium",
+    "product_bible": "AA022_FMCG_Sales_Route_Order_Consolidation_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA023",
+    "case_study_name": "Retail Stock Transfer Recommendation Intelligence",
+    "domain": "Retail Operations",
+    "complexity": "Medium",
+    "product_bible": "AA023_Retail_Stock_Transfer_Recommendation_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA024",
+    "case_study_name": "Hotel Booking Offer Recommendation Intelligence",
+    "domain": "Hospitality & Travel",
+    "complexity": "Medium",
+    "product_bible": "AA024_Hotel_Booking_Offer_Recommendation_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA025",
+    "case_study_name": "Hotel Room Turnaround Prioritization Intelligence",
+    "domain": "Hospitality Operations",
+    "complexity": "Easy",
+    "product_bible": "AA025_Hotel_Room_Turnaround_Prioritization_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA026",
+    "case_study_name": "Facility Work Order Prioritization Intelligence",
+    "domain": "Facilities Management",
+    "complexity": "Medium",
+    "product_bible": "AA026_Facility_Work_Order_Prioritization_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA027",
+    "case_study_name": "Energy Usage Anomaly Response Intelligence",
+    "domain": "Energy & Facilities",
+    "complexity": "Medium",
+    "product_bible": "AA027_Energy_Usage_Anomaly_Response_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA028",
+    "case_study_name": "Invoice Exception Resolution Intelligence",
+    "domain": "Finance Operations",
+    "complexity": "Medium",
+    "product_bible": "AA028_Invoice_Exception_Resolution_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA029",
+    "case_study_name": "Expense Claim Compliance Review Intelligence",
+    "domain": "Finance Operations",
+    "complexity": "Medium",
+    "product_bible": "AA029_Expense_Claim_Compliance_Review_Intelligence_Product_Bible.md"
+  },
+  {
+    "case_id": "AA030",
+    "case_study_name": "Project Delivery Risk & Intervention Intelligence",
+    "domain": "PMO / Delivery Operations",
+    "complexity": "Medium",
+    "product_bible": "AA030_Project_Delivery_Risk_Intervention_Intelligence_Product_Bible.md"
+  }
+]

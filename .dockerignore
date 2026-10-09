@@ -1,0 +1,21 @@
+# Root Dockerignore
+.git
+.gitignore
+.env
+.env.*
+node_modules
+dist
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+venv
+.venv
+*.png
+*.log
+repomix-output.xml
+RealRails_AgenticAI_Batch2_30_Product_Bibles*
+RealRails_AgenticAI_Batch2_Phase1_Generic_Feeders*
