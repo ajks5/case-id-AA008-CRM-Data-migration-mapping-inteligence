@@ -4,6 +4,9 @@
 - **Case ID:** AA008
 - **Case Study Name:** CRM Data Migration Mapping Intelligence
 - **Repository:** https://github.com/ajks5/case-id-AA08-CRM-Data-migration-mapping-inteligence
+- **Cloud Platform:** Render (Backend API) + Vercel (Frontend UI)
+- **Application URL:** https://frontend-ten-ebon-33.vercel.app
+- **Backend / Health URL:** https://case-id-aa008-crm-data-migration-mapping.onrender.com/health
 - **Phase:** 2.3 — Add a Controlled LLM Enhancement
 - **Status:** Complete, Fallback-Safe & Fully Verified
 
