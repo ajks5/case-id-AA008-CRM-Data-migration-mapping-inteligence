@@ -13,15 +13,24 @@ Guarantees:
 - Automatic deterministic fallback on any error, timeout, or schema failure
 """
 
+import socket
 import time
 import httpx
 from typing import Dict, Any, List, Set, Optional, Tuple
+
+# Ensure IPv4 addresses are tried first to prevent dual-stack IPv6 timeout hangs on Windows
+_orig_getaddrinfo = socket.getaddrinfo
+def _prefer_ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+    res = _orig_getaddrinfo(host, port, family, type, proto, flags)
+    return sorted(res, key=lambda x: 0 if x[0] == socket.AF_INET else 1)
+socket.getaddrinfo = _prefer_ipv4_getaddrinfo
 
 from app.models.schemas import LLMEnhancementOutput, LLMTelemetry
 from app.llm.config import LLMConfig
 from app.llm.prompts import SYSTEM_PROMPT, build_user_prompt
 from app.llm.validator import LLMOutputValidator
 from app.llm.fallback import DeterministicFallbackProvider
+
 
 
 class MigrationLLMService:

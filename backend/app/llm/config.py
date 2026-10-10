@@ -64,6 +64,10 @@ class LLMConfig(BaseModel):
         # Resolve model name
         default_model = "gemini-3.5-flash-lite" if provider == "gemini" else ("gpt-4o-mini" if provider == "openai" else "mock-v1")
         model = os.getenv("LLM_MODEL", default_model).strip()
+        # Gracefully map deprecated tier names to active Google AI Studio equivalents
+        if provider == "gemini" and model in ("gemini-2.5-flash-lite", "gemini-2.0-flash-lite"):
+            model = "gemini-3.5-flash-lite"
+
 
         # Resolve timeout
         try:

@@ -94,14 +94,82 @@ START
 ---
 
 ### Test Suite & Verification Results
-- **Full Pytest Suite (`backend/tests/`):** 28 of 28 tests passing:
+- **Full Pytest Suite (`backend/tests/`):** 29 of 29 tests passing:
   - `tests/test_agents.py` (5 tests): Deterministic agents profiling, mapping, transform, validation, decision.
   - `tests/test_rules.py` (6 tests): Rules 1–5 deterministic verification and scoring.
   - `tests/test_scenarios.py` (5 tests): Canonical Product Bible scenarios.
   - `tests/test_langgraph.py` (6 tests): Graph compilation, 12-node topology, conditional branching, 10-step trace.
-  - `tests/test_llm_enhancement.py` (6 tests): All 5 evaluation scenarios (normal, transform rationales, review actions, timeout fallback, malformed output fallback, hallucination pruning).
-- **End-to-End Verification (`backend/validate_e2e.py`):** 100% pass across health check, LLM status endpoint, all 3 migration scenarios, LangGraph node traces, and audit persistence.
+  - `tests/test_llm_enhancement.py` (7 tests): All evaluation scenarios (normal live call, transform rationales, review actions, timeout fallback, 429 multi-key fallback, malformed output fallback, hallucination pruning).
+- **End-to-End Verification (`backend/validate_e2e.py`):** 100% pass across health check, LLM status endpoint, all 3 migration scenarios with live Gemini API execution, LangGraph node traces, and audit persistence.
 - **Frontend UI & Build:** React 19 + TypeScript + Vite compiles in 575ms with zero errors (`tsc -b && vite build`). Interactive UI visualizes LLM badges, executive summary, transformation rationales, risk assessment, and fallback status.
+
+---
+
+### Dual Verification Evidence: Live Gemini Success & Safe 429 Fallback
+
+#### 1. Live Gemini API Execution (Success Scenario)
+- **Invocation Context:** Scenario 1 (`simple_schema`) executed with live Gemini API key via header-secured REST.
+- **Telemetry Record:**
+  ```json
+  {
+    "llm_used": true,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "status": "SUCCESS",
+    "fallback_used": false,
+    "validation_passed": true,
+    "latency_ms": 2730.2,
+    "error_message": null
+  }
+  ```
+- **Validated Structured Output (`LLMEnhancementOutput`):**
+  - **Executive Summary:** *"The migration plan for transitioning records from legacy_contacts to crm_contacts has achieved an overall READY status with a direct acceptance routing decision. All core fields map directly with 100% confidence, supplemented by a default value assignment for the status field. Field coverage is complete with zero unmapped elements or blocking issues."*
+  - **Risk Assessment:** `LOW`
+  - **Transformation Rationales:** `{}` (no transformations required for direct-map)
+  - **Suggested Review Actions:** `[]`
+- **LangGraph Node Trace:**
+  - Step 7: `direct_accept` (Gateway: COMPLETED)
+  - Step 8: `llm_enhancement` (Controlled LLM Enhancement §21: COMPLETED, Status: SUCCESS)
+  - Step 9: `explainer` (Migration Explainer: COMPLETED)
+  - Step 10: `audit` (Immutable Audit Store: COMPLETED)
+
+#### 2. HTTP 429 / Quota Exhaustion Scenario (Safe Fallback Scenario)
+- **Invocation Context:** Quota exhaustion / rate limit encountered during provider invocation.
+- **Telemetry Record:**
+  ```json
+  {
+    "llm_used": false,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "status": "FALLBACK",
+    "fallback_used": true,
+    "validation_passed": false,
+    "latency_ms": 12.4,
+    "error_message": "LLM invocation error: Gemini API returned 429 on key #1: Resource exhausted"
+  }
+  ```
+- **Safe Fallback Output (`DeterministicFallbackProvider`):**
+  - **Executive Summary:** *"Deterministic direct migration accepted. All 6 target fields directly mapped with 1 default value assigned."*
+  - **Risk Assessment:** `LOW RISK: High-confidence direct field mappings with zero constraint violations.`
+  - **Transformation Rationales:** `{}`
+- **Fallback Safety Guarantee:**
+  - Zero 500 crashes or application interruption.
+  - Deterministic authority remains 100% authoritative (`overall_status="READY"`, route=`route_direct_accept`).
+  - No secret tokens or keys leaked in telemetry or audit logs.
+
+#### 3. Side-by-Side Verification Summary
+
+| Metric / Attribute | Live Gemini Success | HTTP 429 Fallback | Safety Requirement Met? |
+|---|---|---|---|
+| **Provider** | `gemini` | `gemini` | Yes |
+| **Model** | `gemini-3.5-flash-lite` | `gemini-3.5-flash-lite` | Yes |
+| **Status** | `SUCCESS` | `FALLBACK` | Yes |
+| **Fallback Used** | `false` | `true` | Yes |
+| **Validated** | `true` | `false` | Yes |
+| **Deterministic Route** | `route_direct_accept` | `route_direct_accept` | Preserved identically |
+| **Overall Decision** | `READY` | `READY` | Preserved identically |
+| **Audit Persistence** | Recorded in `AuditRecord` | Recorded in `AuditRecord` | Full audit trail maintained |
+
 
 ---
 
