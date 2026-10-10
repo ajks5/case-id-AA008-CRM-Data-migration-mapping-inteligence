@@ -239,8 +239,9 @@ export interface LLMStatus {
   status: string;
 }
 
-const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
+const RAW_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').trim();
+export const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
+export const IS_CLOUD_BACKEND = !API_BASE_URL.includes('localhost') && !API_BASE_URL.includes('127.0.0.1');
 
 export async function fetchScenarios(): Promise<ScenarioItem[]> {
   const res = await fetch(`${API_BASE_URL}/api/scenarios`);

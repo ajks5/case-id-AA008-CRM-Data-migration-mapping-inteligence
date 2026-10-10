@@ -4,6 +4,7 @@ import {
   runMigration,
   fetchAuditRecords,
   fetchHealth,
+  IS_CLOUD_BACKEND,
 } from '../api/client';
 import type {
   ScenarioItem,
@@ -34,58 +35,67 @@ export const MigrationWorkspace: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<'full' | 'context' | 'mapping'>('full');
 
-  useEffect(() => {
-    // Initial data loading
-    const initialize = async () => {
-      try {
-        const health = await fetchHealth();
-        setBackendHealth(health.status);
-      } catch {
-        setBackendHealth('Offline (Ensure backend is running on :8000)');
-      }
+  const initialize = async () => {
+    setBackendHealth(IS_CLOUD_BACKEND ? 'Connecting...' : 'Checking...');
+    try {
+      const health = await fetchHealth();
+      setBackendHealth(health.status);
+    } catch {
+      setBackendHealth(
+        IS_CLOUD_BACKEND
+          ? 'Cloud Server Asleep / Offline (Click to retry)'
+          : 'Offline (Ensure backend is running on :8000)'
+      );
+    }
 
-      try {
-        const loadedScenarios = await fetchScenarios();
-        setScenarios(loadedScenarios);
-        if (loadedScenarios.length > 0) {
-          const params = new URLSearchParams(window.location.search);
-          const scenarioParam = params.get('scenario');
-          const matched =
-            loadedScenarios.find((s) => s.id === scenarioParam) || loadedScenarios[0];
-          setSelectedScenarioId(matched.id);
-          setCurrentRequest(matched.request);
+    try {
+      const loadedScenarios = await fetchScenarios();
+      setScenarios(loadedScenarios);
+      if (loadedScenarios.length > 0) {
+        const params = new URLSearchParams(window.location.search);
+        const scenarioParam = params.get('scenario');
+        const matched =
+          loadedScenarios.find((s) => s.id === scenarioParam) || loadedScenarios[0];
+        setSelectedScenarioId(matched.id);
+        setCurrentRequest(matched.request);
 
-          const viewParam = params.get('view') as 'full' | 'context' | 'mapping' | null;
-          if (viewParam && ['full', 'context', 'mapping'].includes(viewParam)) {
-            setActiveView(viewParam);
-          }
+        const viewParam = params.get('view') as 'full' | 'context' | 'mapping' | null;
+        if (viewParam && ['full', 'context', 'mapping'].includes(viewParam)) {
+          setActiveView(viewParam);
+        }
 
-
-          if (params.get('autorun') === '1' || params.get('autorun') === 'true') {
-            setIsLoading(true);
-            try {
-              const context = await runMigration(matched.request);
-              setWorkflowContext(context);
-              const records = await fetchAuditRecords();
-              setHistoricalAudits(records);
-              const matchedAudit = records.find((r) => r.workflow_id === context.workflow_id);
-              if (matchedAudit) {
-                setCurrentAudit(matchedAudit);
-              }
-            } catch (runErr: any) {
-              setErrorMessage(runErr.message || 'Auto-run migration failed.');
-            } finally {
-              setIsLoading(false);
+        if (params.get('autorun') === '1' || params.get('autorun') === 'true') {
+          setIsLoading(true);
+          try {
+            const context = await runMigration(matched.request);
+            setWorkflowContext(context);
+            const records = await fetchAuditRecords();
+            setHistoricalAudits(records);
+            const matchedAudit = records.find((r) => r.workflow_id === context.workflow_id);
+            if (matchedAudit) {
+              setCurrentAudit(matchedAudit);
             }
+          } catch (runErr: any) {
+            setErrorMessage(runErr.message || 'Auto-run migration failed.');
+          } finally {
+            setIsLoading(false);
           }
         }
-      } catch (err: any) {
+      }
+    } catch (err: any) {
+      if (IS_CLOUD_BACKEND) {
+        setErrorMessage(
+          'Connecting to Render backend. If server was asleep, it may take 20-30s to wake up. Click the status badge to retry.'
+        );
+      } else {
         setErrorMessage(`Could not load scenarios: ${err.message}`);
       }
+    }
 
-      refreshAudits();
-    };
+    refreshAudits();
+  };
 
+  useEffect(() => {
     initialize();
   }, []);
 
@@ -146,22 +156,26 @@ export const MigrationWorkspace: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-gray-500 mt-0.5">
-            RealRails Agentic AI Batch 2 • LangGraph Conditional Routing • Phase 2.2
+            RealRails Agentic AI Batch 2 • LangGraph Conditional Routing • Phase 2.3 Controlled LLM
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <div className="text-2xs text-gray-400 font-mono">BACKEND API (:8000)</div>
-            <span
-              className={`inline-block px-2 py-0.5 rounded text-2xs font-semibold ${
+            <div className="text-2xs text-gray-400 font-mono">
+              BACKEND: {IS_CLOUD_BACKEND ? 'CLOUD (RENDER)' : 'LOCAL (:8000)'}
+            </div>
+            <button
+              onClick={() => initialize()}
+              title="Click to refresh or retry connection"
+              className={`inline-block px-2.5 py-1 rounded text-2xs font-semibold cursor-pointer border transition-colors ${
                 backendHealth === 'healthy'
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'bg-amber-100 text-amber-800'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                  : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
               }`}
             >
               ● {backendHealth}
-            </span>
+            </button>
           </div>
         </div>
       </header>
