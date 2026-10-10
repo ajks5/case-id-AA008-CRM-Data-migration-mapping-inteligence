@@ -17,15 +17,16 @@
 2. **Deterministic Authority Preserved Unchanged (§12):** All 5 domain agents (Schema Analyzer, Field Mapper, Transformer, Validator, Decision Agent), all 5 deterministic business rules (Rules 1–5), and LangGraph conditional routing (`route_after_decision`) remain 100% authoritative. The LLM never overrides mapping decisions, never alters statuses, and never invents database fields.
 3. **Graph Topology Evolution:** Added Node 7 (`llm_enhancement`) into the compiled LangGraph `StateGraph(WorkflowState)`. All 3 conditional branches (`direct_accept`, `transform_verify`, `human_review`) converge into `llm_enhancement`, which validates structured output, applies deterministic fallback if needed, and flows into `explainer` and `audit`.
 4. **Dedicated Adapter / Service Boundary:** Encapsulated LLM operations in `app.llm` with clean separation:
-   - `config.py`: Environment-driven configuration (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_TIMEOUT`, `LLM_ENABLED`, `GEMINI_API_KEY`, `OPENAI_API_KEY`).
+   - `config.py`: Environment-driven configuration (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_TIMEOUT`, `LLM_ENABLED`, `GEMINI_API_KEYS`, `GEMINI_API_KEY`, `OPENAI_API_KEY`) supporting multi-key pool rotation.
    - `prompts.py`: Bounded system prompt & input prompt contract per Feeder Guide §6.
    - `validator.py`: Pydantic schema validation, text bounding, and destination-field hallucination pruning (`LLMOutputValidator`).
    - `fallback.py`: Guaranteed deterministic template explanation provider (`DeterministicFallbackProvider`).
-   - `service.py`: Provider invocation (`gemini` via header-secured REST, `openai`, `mock`) with strict error sanitization.
-5. **Double-Layer Secret Guardrail:** 
+   - `service.py`: Provider invocation (`gemini` via header-secured REST on `gemini-3.5-flash-lite`, `openai`, `mock`) with automatic key switching on quota exhaustion (429/403/401) and strict error sanitization.
+5. **Double-Layer Secret Guardrail & Multi-Key Failover:** 
    - Never exposes API keys in source control (`.env*` gitignored, placeholder `.env.example`).
    - Gemini API uses `x-goog-api-key` request header (never exposed in query strings).
-   - Regex-based error sanitization strips keys, tokens, and credentials from all exception strings before recording in trace or audit.
+   - Regex-based error sanitization strips keys, tokens, and credentials (`AIza`, `sk-`, `AQ.`) from all exception strings before recording in trace or audit.
+   - Dual-key pool support: automatically switches between primary and backup keys on quota limits (429/403) before falling back.
 6. **Full Traceability & Audit Logging:** Non-secret telemetry (`llm_telemetry`: provider, model, status, latency_ms, fallback_used, validation_passed) is recorded in `WorkflowState`, step 8 of `node_trace`, and persisted in `AuditRecord`.
 7. **Interactive UI Enhancement:** Added `LLMEnhancementPanel.tsx` in frontend, updating the pipeline visualizer to 10 stages and rendering executive summaries, transformation rationales, risk assessments, and triage steps with fallback alerts.
 
