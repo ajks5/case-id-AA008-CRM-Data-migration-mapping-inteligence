@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   fetchScenarios,
@@ -168,11 +169,10 @@ export const MigrationWorkspace: React.FC = () => {
             <button
               onClick={() => initialize()}
               title="Click to refresh or retry connection"
-              className={`inline-block px-2.5 py-1 rounded text-2xs font-semibold cursor-pointer border transition-colors ${
-                backendHealth === 'healthy'
+              className={`inline-block px-2.5 py-1 rounded text-2xs font-semibold cursor-pointer border transition-colors ${backendHealth === 'healthy'
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
                   : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
-              }`}
+                }`}
             >
               ● {backendHealth}
             </button>

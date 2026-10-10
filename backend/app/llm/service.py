@@ -29,6 +29,7 @@ class MigrationLLMService:
 
     def __init__(self, config: Optional[LLMConfig] = None):
         self.config = config or LLMConfig.from_env()
+        self._active_key_index: int = 0
 
     def build_prompt(
         self,
@@ -68,16 +69,17 @@ class MigrationLLMService:
         clean = re.sub(r"key=[a-zA-Z0-9_\-]+", "key=[REDACTED]", message)
         clean = re.sub(r"Bearer\s+[a-zA-Z0-9_\-]+", "Bearer [REDACTED]", clean)
         clean = re.sub(r"AIza[0-9A-Za-z-_]{35}", "[REDACTED_API_KEY]", clean)
+        clean = re.sub(r"AQ\.[0-9A-Za-z-_]{30,}", "[REDACTED_API_KEY]", clean)
         clean = re.sub(r"sk-[a-zA-Z0-9-_]{20,}", "[REDACTED_API_KEY]", clean)
         return clean
 
     def _call_gemini(self, user_prompt: str) -> str:
-        """Invokes Gemini REST API via httpx using header credentials to prevent URL leakage."""
+        """Invokes Gemini REST API with automatic key switching / failover."""
+        keys_pool = self.config.api_keys if self.config.api_keys else ([self.config.api_key] if self.config.api_key else [])
+        if not keys_pool:
+            raise ValueError("No Gemini API keys configured.")
+
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.config.model}:generateContent"
-        headers = {
-            "x-goog-api-key": self.config.api_key,
-            "Content-Type": "application/json",
-        }
         payload = {
             "system_instruction": {
                 "parts": [{"text": SYSTEM_PROMPT}]
@@ -93,28 +95,60 @@ class MigrationLLMService:
             },
         }
 
-        with httpx.Client(timeout=self.config.timeout) as client:
-            resp = client.post(url, headers=headers, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
+        last_error = None
+        num_keys = len(keys_pool)
+        start_index = self._active_key_index
 
-        # Extract text from Gemini response structure
-        candidates = data.get("candidates", [])
-        if not candidates:
-            raise ValueError("Gemini returned zero candidates.")
-        parts = candidates[0].get("content", {}).get("parts", [])
-        if not parts:
-            raise ValueError("Gemini returned empty parts.")
-        return parts[0].get("text", "")
+        for attempt in range(num_keys):
+            key_index = (start_index + attempt) % num_keys
+            current_key = keys_pool[key_index]
+            headers = {
+                "x-goog-api-key": current_key,
+                "Content-Type": "application/json",
+            }
 
+            try:
+                with httpx.Client(timeout=self.config.timeout) as client:
+                    resp = client.post(url, headers=headers, json=payload)
+
+                    # Auto-switch to next key on quota, rate limit, forbidden, or invalid key
+                    if resp.status_code in (400, 401, 403, 429) and num_keys > 1:
+                        last_error = ValueError(f"Gemini API returned {resp.status_code} on key #{key_index + 1}: {resp.text[:150]}")
+                        self._active_key_index = (key_index + 1) % num_keys
+                        continue
+
+                    resp.raise_for_status()
+                    data = resp.json()
+
+                candidates = data.get("candidates", [])
+                if not candidates:
+                    raise ValueError("Gemini returned zero candidates.")
+                parts = candidates[0].get("content", {}).get("parts", [])
+                if not parts:
+                    raise ValueError("Gemini returned empty parts.")
+
+                # Retain this active key index for next requests
+                self._active_key_index = key_index
+                return parts[0].get("text", "")
+
+            except (httpx.HTTPStatusError, httpx.RequestError) as http_err:
+                last_error = http_err
+                if num_keys > 1 and attempt < num_keys - 1:
+                    self._active_key_index = (key_index + 1) % num_keys
+                    continue
+                raise
+
+        if last_error:
+            raise last_error
+        raise ValueError("All configured Gemini API keys failed.")
 
     def _call_openai(self, user_prompt: str) -> str:
-        """Invokes OpenAI REST API via httpx with json_object response format."""
+        """Invokes OpenAI REST API with automatic key switching / failover."""
+        keys_pool = self.config.api_keys if self.config.api_keys else ([self.config.api_key] if self.config.api_key else [])
+        if not keys_pool:
+            raise ValueError("No OpenAI API keys configured.")
+
         url = "https://api.openai.com/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {self.config.api_key}",
-            "Content-Type": "application/json",
-        }
         payload = {
             "model": self.config.model,
             "messages": [
@@ -125,15 +159,45 @@ class MigrationLLMService:
             "temperature": 0.2,
         }
 
-        with httpx.Client(timeout=self.config.timeout) as client:
-            resp = client.post(url, headers=headers, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
+        last_error = None
+        num_keys = len(keys_pool)
+        start_index = self._active_key_index
 
-        choices = data.get("choices", [])
-        if not choices:
-            raise ValueError("OpenAI returned zero choices.")
-        return choices[0].get("message", {}).get("content", "")
+        for attempt in range(num_keys):
+            key_index = (start_index + attempt) % num_keys
+            current_key = keys_pool[key_index]
+            headers = {
+                "Authorization": f"Bearer {current_key}",
+                "Content-Type": "application/json",
+            }
+
+            try:
+                with httpx.Client(timeout=self.config.timeout) as client:
+                    resp = client.post(url, headers=headers, json=payload)
+                    if resp.status_code in (400, 401, 403, 429) and num_keys > 1:
+                        last_error = ValueError(f"OpenAI API returned {resp.status_code} on key #{key_index + 1}")
+                        self._active_key_index = (key_index + 1) % num_keys
+                        continue
+
+                    resp.raise_for_status()
+                    data = resp.json()
+
+                choices = data.get("choices", [])
+                if not choices:
+                    raise ValueError("OpenAI returned zero choices.")
+                self._active_key_index = key_index
+                return choices[0].get("message", {}).get("content", "")
+
+            except (httpx.HTTPStatusError, httpx.RequestError) as http_err:
+                last_error = http_err
+                if num_keys > 1 and attempt < num_keys - 1:
+                    self._active_key_index = (key_index + 1) % num_keys
+                    continue
+                raise
+
+        if last_error:
+            raise last_error
+        raise ValueError("All configured OpenAI API keys failed.")
 
     def _call_mock(
         self,
@@ -202,7 +266,7 @@ class MigrationLLMService:
             return fallback_res, telemetry
 
         # Check if API key is missing for live providers
-        if self.config.provider in ("gemini", "openai") and not self.config.api_key:
+        if self.config.provider in ("gemini", "openai") and not (self.config.api_key or self.config.api_keys):
             fallback_res = DeterministicFallbackProvider.generate(
                 source_table, dest_table, overall_status, selected_route,
                 routing_status, summary_counts, transformations,

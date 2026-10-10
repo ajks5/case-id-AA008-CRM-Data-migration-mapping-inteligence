@@ -96,12 +96,15 @@ def get_llm_status():
     """
     from app.llm.config import LLMConfig
     cfg = LLMConfig.from_env()
+    has_keys = bool(cfg.api_key or cfg.api_keys)
+    keys_count = len(cfg.api_keys) if cfg.api_keys else (1 if cfg.api_key else 0)
     return {
         "provider": cfg.provider,
         "model": cfg.model,
         "enabled": cfg.enabled,
         "timeout": cfg.timeout,
-        "has_api_key": bool(cfg.api_key),
-        "status": "ready" if (cfg.enabled and (cfg.provider == "mock" or bool(cfg.api_key))) else "fallback_only",
+        "has_api_key": has_keys,
+        "api_keys_count": keys_count,
+        "status": "ready" if (cfg.enabled and (cfg.provider == "mock" or has_keys)) else "fallback_only",
     }
 

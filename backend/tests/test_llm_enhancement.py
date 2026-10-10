@@ -263,3 +263,51 @@ def test_validator_prunes_hallucinated_fields():
     assert output is not None
     assert "valid_field" in output.transformation_rationales
     assert "hallucinated_non_existent_column" not in output.transformation_rationales
+
+
+def test_key_switching_and_quota_failover():
+    """
+    Unit test: Verify that when Key 1 encounters 429/403/error, service switches to Key 2.
+    """
+    config = LLMConfig(
+        provider="gemini",
+        model="gemini-3.5-flash-lite",
+        api_keys=["primary_key_429", "backup_key_success"],
+    )
+    service = MigrationLLMService(config)
+
+    valid_json_response = """
+    {
+      "executive_summary": "Successful migration summary after failover.",
+      "transformation_rationales": {},
+      "risk_assessment": "LOW",
+      "suggested_review_actions": []
+    }
+    """
+
+    call_count = 0
+    def mock_post(self, url, headers=None, json=None):
+        nonlocal call_count
+        call_count += 1
+        key = headers.get("x-goog-api-key")
+        import httpx
+        req = httpx.Request("POST", url)
+        if key == "primary_key_429":
+            return httpx.Response(429, request=req, text='{"error": {"message": "Resource exhausted"}}')
+        elif key == "backup_key_success":
+            import json as json_lib
+            body = {
+                "candidates": [
+                    {"content": {"parts": [{"text": valid_json_response}]}}
+                ]
+            }
+            return httpx.Response(200, request=req, text=json_lib.dumps(body))
+        raise ValueError(f"Unexpected key: {key}")
+
+    with patch("httpx.Client.post", mock_post):
+        result_text = service._call_gemini("test user prompt")
+
+    assert "Successful migration summary after failover" in result_text
+    assert call_count == 2
+    assert service._active_key_index == 1
+
