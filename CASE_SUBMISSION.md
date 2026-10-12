@@ -4,8 +4,9 @@
 
 - **Case ID:** `AA008`
 - **Case Study:** CRM Data Migration Mapping Intelligence
-- **Repository:** [https://github.com/ajks5/case-id-AA08-CRM-Data-migration-mapping-inteligence](https://github.com/ajks5/case-id-AA08-CRM-Data-migration-mapping-inteligence)
+- **Repository:** [https://github.com/ajks5/case-id-AA008-CRM-Data-migration-mapping-inteligence](https://github.com/ajks5/case-id-AA008-CRM-Data-migration-mapping-inteligence)
 - **Application URL:** [https://frontend-ten-ebon-33.vercel.app](https://frontend-ten-ebon-33.vercel.app)
+- **Production Alias:** [https://case-id-aa-008-crm-data-migration-m.vercel.app](https://case-id-aa-008-crm-data-migration-m.vercel.app)
 - **Backend Health Check:** [https://case-id-aa008-crm-data-migration-mapping.onrender.com/health](https://case-id-aa008-crm-data-migration-mapping.onrender.com/health)
 - **Latest Repomix:** [repomix-output.xml](repomix-output.xml)
 - **Demo Script:** [DEMO_SCRIPT.md](DEMO_SCRIPT.md)
@@ -14,23 +15,24 @@
 
 ---
 
-## Deployment State & Environment Verification (Re-verified 2026-10-11)
+## Deployment State & Environment Verification (Verified 2026-10-12)
 
 1. **Backend Service:**
    - Deployed on Render (`case-id-aa008-crm-data-migration-mapping.onrender.com`).
-   - `/health` endpoint returns `200 OK` (`status: healthy`, `case_id: AA008`). Re-verified on 2026-10-11.
+   - `/health` endpoint returns `200 OK` (`status: healthy`, `case_id: AA008`). Re-verified live on 2026-10-12.
    - Seeded scenarios endpoint `/api/scenarios` returns all three Product Bible test cases.
+   - POST `/api/migrate` verified live with active 10-node execution trace.
    - Configured with Gemini LLM provider.
 
 2. **Frontend Service:**
-   - Deployed on Vercel (`frontend-ten-ebon-33.vercel.app`).
-   - Live and operational, currently serving earlier Phase 2 workflow bundle.
-   - **Deployment State Disclosure:** The local Phase 3 codebase contains the latest polished business UI, dual-mode Explainability & Audit drawer, and responsive design system captured in the documentation screenshots. Synchronize this local Phase 3 source to GitHub and redeploy to Vercel to reflect the latest UI on the cloud URL.
+   - Deployed on Vercel (`frontend-ten-ebon-33.vercel.app` and `case-id-aa-008-crm-data-migration-m.vercel.app`).
+   - Live and operational, fully serving the Phase 3 product release.
+   - Contains the polished business workspace, dual-mode Explainability & Audit drawer, 10-node LangGraph trace, and CSV worksheet export.
 
-3. **Security & Secrets Verification:**
-   - Codebase security scan verified zero committed `.env` files or hardcoded credentials in tracked files.
-   - Only `.env.example` is committed with placeholder values.
-   - Local execution is pre-configured for the `mock` provider to enable keyless, offline evaluation.
+3. **Repository State & Synchronization:**
+   - Synchronized with GitHub repository `https://github.com/ajks5/case-id-AA008-CRM-Data-migration-mapping-inteligence.git`.
+   - `main` branch is clean, up to date, and verified.
+   - Zero committed secrets or API keys in tracked files; `.env.example` committed.
 
 4. **Test Suite Verification:**
    - `pytest`: **29/29 tests passing** across agents, LangGraph conditional routing, controlled LLM enhancement, rules, and scenarios.
@@ -51,7 +53,7 @@
 - [x] Three reproducible demo scenarios with step-by-step instructions.
 - [x] Complete technology stack and local run instructions (PowerShell).
 - [x] Honest limitations and non-goals (no database writes, analyst decision support only, no certification claims).
-- [x] Five documented screenshots from the verified local Phase 3 UI.
+- [x] Five documented screenshots from the verified Phase 3 UI.
 
 ### 2. Demo Checklist
 - [x] Local backend launches cleanly with `$env:LLM_PROVIDER="mock"` and `$env:LLM_ENABLED="true"`.
@@ -68,9 +70,9 @@
 - [x] Concise README, timed demo flow, submission details, the latest Repomix snapshot, and five screenshots.
 - [x] Full Repomix XML snapshot generated and validated (102 files packed, security scan clean).
 - [x] Local verification: 29 backend tests passed, three end-to-end scenarios passed, LLM fallback tests passed.
-- [ ] Synchronize the Phase 3 source and documents to the linked repository.
-- [ ] Redeploy and recheck the cloud frontend on Vercel.
-- [ ] Optionally add a short demo-video link.
+- [x] Synchronized Phase 3 source and documents to the linked GitHub repository.
+- [x] Redeployed and verified cloud frontend on Vercel and backend on Render.
+- [x] Verified working state of live cloud URLs.
 
 ---
 

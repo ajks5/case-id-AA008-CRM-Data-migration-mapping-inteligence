@@ -211,11 +211,11 @@ npm run dev
 
 | Service | Endpoint | Status | Notes |
 |---|---|---|---|
-| **Frontend** | [frontend-ten-ebon-33.vercel.app](https://frontend-ten-ebon-33.vercel.app) | Live | Earlier Phase 2 workflow deployment. Synchronize local Phase 3 UI before production review. |
-| **Backend API** | [Render Health Check](https://case-id-aa008-crm-data-migration-mapping.onrender.com/health) | Live (Checked 2026-10-11) | Responds with HTTP 200 `{"status": "healthy", "case_id": "AA008"}`. |
+| **Frontend** | [frontend-ten-ebon-33.vercel.app](https://frontend-ten-ebon-33.vercel.app) | Live | Production Phase 3 release deployed on Vercel with polished business workspace and Explainability & Audit drawer. (Alias: [case-id-aa-008-crm-data-migration-m.vercel.app](https://case-id-aa-008-crm-data-migration-m.vercel.app)) |
+| **Backend API** | [Render Health Check](https://case-id-aa008-crm-data-migration-mapping.onrender.com/health) | Live (Checked 2026-10-12) | Responds with HTTP 200 `{"status": "healthy", "case_id": "AA008"}`. |
 
 > [!NOTE]
-> **Deployment State Disclosure:** The deployed cloud frontend currently serves the earlier Phase 2 workflow UI. The screenshots, Explainability & Audit drawer, and polished layout documented here reflect the local Phase 3 product codebase.
+> **Deployment State:** The live cloud deployment is synchronized with GitHub `main` and actively serves the complete Phase 3 application across Vercel and Render.
 
 ---
 
@@ -271,4 +271,4 @@ The following screenshots capture the verified local Phase 3 user interface (`do
 - **[Case Submission Summary](CASE_SUBMISSION.md):** Submission metadata, checklists, and test results.
 - **[Product Bible](docs/Product_Bible/AA008_CRM_Data_Migration_Mapping_Intelligence_Product_Bible.md):** Authoritative domain specification.
 - **[Latest Repomix Snapshot](repomix-output.xml):** Full codebase snapshot (102 files packed).
-- **[GitHub Repository](https://github.com/ajks5/case-id-AA08-CRM-Data-migration-mapping-inteligence):** Source code repository.
+- **[GitHub Repository](https://github.com/ajks5/case-id-AA008-CRM-Data-migration-mapping-inteligence):** Source code repository.
