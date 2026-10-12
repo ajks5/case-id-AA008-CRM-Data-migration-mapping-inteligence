@@ -241,7 +241,7 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
                     >
                       {isExpanded ? '▲ Hide Execution Telemetry & Rule Details' : '▼ Inspect Telemetry & Domain Rules'}
                     </button>
-                    <span className="text-3xs font-mono text-slate-400">
+                    <span className="text-3xs font-mono text-slate-500">
                       Context target: context.{meta.contextKey}
                     </span>
                   </div>
@@ -259,7 +259,7 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
                       </div>
                       {agent.details && Object.keys(agent.details).length > 0 && (
                         <div>
-                          <strong className="text-slate-400 block mb-1 text-2xs">Structured Output Telemetry:</strong>
+                          <strong className="technical-dark-label block mb-1 text-2xs">Structured Output Telemetry:</strong>
                           <pre className="text-3xs bg-slate-950 p-2 rounded text-emerald-400 overflow-x-auto leading-relaxed">
                             {JSON.stringify(agent.details, null, 2)}
                           </pre>

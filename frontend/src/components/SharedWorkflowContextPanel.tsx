@@ -138,7 +138,7 @@ export const SharedWorkflowContextPanel: React.FC<SharedWorkflowContextPanelProp
 
         <div className="flex items-center gap-2">
           <div className="text-right">
-            <span className="text-2xs text-slate-400 font-mono block">RUN CONTEXT ID</span>
+            <span className="text-2xs technical-dark-label font-mono block">RUN CONTEXT ID</span>
             <span className="font-mono text-xs text-indigo-300 font-bold">{workflow_id}</span>
           </div>
           <button

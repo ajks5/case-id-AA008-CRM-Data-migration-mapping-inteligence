@@ -86,17 +86,17 @@ export const AuditTrailPanel: React.FC<AuditTrailPanelProps> = ({
 
             <div className="grid grid-2 gap-3 text-2xs text-slate-300">
               <div>
-                <span className="text-slate-500 block">Execution Timestamp:</span>
+                <span className="technical-dark-label block">Execution Timestamp:</span>
                 <span>{currentAudit.timestamp}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Request Reference:</span>
+                <span className="technical-dark-label block">Request Reference:</span>
                 <span>{currentAudit.request_reference}</span>
               </div>
             </div>
 
             <div className="mt-3 pt-2 border-t border-slate-800 text-2xs">
-              <span className="text-slate-500 block mb-1">Agent Sequence:</span>
+              <span className="technical-dark-label block mb-1">Agent Sequence:</span>
               <div className="flex flex-wrap gap-1">
                 {currentAudit.agent_execution_order.map((agent, i) => (
                   <span
@@ -110,7 +110,7 @@ export const AuditTrailPanel: React.FC<AuditTrailPanelProps> = ({
             </div>
 
             <div className="mt-3 pt-2 border-t border-slate-800 text-2xs">
-              <span className="text-slate-500 block mb-1">Triggered Decision Rules:</span>
+              <span className="technical-dark-label block mb-1">Triggered Decision Rules:</span>
               <div className="flex flex-wrap gap-1">
                 {currentAudit.triggered_rules.map((rule, i) => (
                   <span

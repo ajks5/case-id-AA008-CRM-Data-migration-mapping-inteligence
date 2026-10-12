@@ -24,6 +24,8 @@
       "**/*.zip",
       "repomix-output.xml",
       "repomix-output-phase1.xml",
+      "phase3.2/**",
+      ".impeccable/**",
       "*.png",
       "*.jpg",
       "*.jpeg"

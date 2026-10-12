@@ -1,7 +1,8 @@
-import { MigrationWorkspace } from './pages/MigrationWorkspace';
+import './product.css';
+import { ProductWorkspace } from './pages/ProductWorkspace';
 
 function App() {
-  return <MigrationWorkspace />;
+  return <ProductWorkspace />;
 }
 
 export default App;
