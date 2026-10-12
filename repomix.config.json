@@ -26,6 +26,8 @@
       "repomix-output-phase1.xml",
       "phase3.2/**",
       ".impeccable/**",
+      "RealRails_AgenticAI_Batch2_30_Product_Bibles/**",
+      "feeders_temp/**",
       "*.png",
       "*.jpg",
       "*.jpeg"
